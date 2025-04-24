@@ -6,6 +6,10 @@ import Home from "./pages/Home";
 import LostItems from "./pages/LostItems";
 import FoundItems from "./pages/FoundItems";
 import Contact from "./pages/contact";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import Profile from "./pages/Profile";
+import AllItems from "./pages/AllItems";
 
 function App() {
   return (
@@ -17,6 +21,10 @@ function App() {
           <Route path="/lost" element={<LostItems />} />
           <Route path="/found" element={<FoundItems />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/all" element={<AllItems />} />
         </Routes>
       </main>
       <Footer />

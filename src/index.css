@@ -7,6 +7,12 @@ body {
   color: #333;
 }
 
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
 /* Navbar Styling */
 .navbar {
   background: #007bff;
@@ -167,4 +173,231 @@ body {
 .page-container p {
   color: #555;
   font-size: 18px;
+}
+
+/* Card Component Styles */
+.card {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+.card-title {
+  font-size: 20px;
+  color: #007bff;
+  margin-bottom: 8px;
+}
+.card-desc {
+  color: #555;
+  margin-bottom: 12px;
+}
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #777;
+}
+.status.lost {
+  background: #ffc107;
+  color: #333;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.status.found {
+  background: #28a745;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* Form container */
+.form-container {
+  max-width: 400px;
+  margin: 60px auto;
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.form-container h1 {
+  margin-bottom: 20px;
+  font-size: 28px;
+  color: #007bff;
+}
+.form-group {
+  margin-bottom: 20px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
+}
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #007bff;
+}
+.submit-btn {
+  width: 100%;
+  background: #007bff;
+  color: white;
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+.submit-btn:hover {
+  background: #0056b3;
+}
+
+/* Profile page styles */
+.profile-item {
+  margin-bottom: 12px;
+}
+.profile-item label {
+  font-weight: bold;
+  color: #333;
+  margin-right: 8px;
+}
+
+/* Found and Lost modern grid styles */
+.page-container.found-items-modern,
+.page-container.lost-items-modern {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 40px;
+}
+.found-header-modern,
+.lost-header-modern {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.found-grid,
+.lost-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+}
+
+/* Card container styling for found/lost cards */
+.found-card,
+.lost-card {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+.found-card:hover,
+.lost-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+.found-img,
+.lost-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+.found-content,
+.lost-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.found-content h2,
+.lost-content h2 {
+  margin: 0 0 12px;
+  color: #007bff;
+  font-size: 1.25rem;
+}
+.found-content p,
+.lost-content p {
+  flex: 1;
+  color: #555;
+  margin-bottom: 16px;
+}
+.found-meta,
+.lost-meta {
+  display: flex;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #777;
+}
+
+/* Lost items styles analogous to Found */
+.lost-items-modern .lost-header-modern h1 {
+  color: #dc3545;
+}
+
+.lost-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+/* All Items Page Styles */
+.all-items-page .filter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin: 30px 0;
+}
+.all-items-page .filter-controls input[type="text"] {
+  flex: 1 1 200px;
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+.all-items-page .filter-controls input[type="text"]:focus {
+  border-color: #007bff;
+}
+.all-items-page .filter-controls label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.all-items-page .filter-controls select {
+  padding: 10px 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+.all-items-page .filter-controls select:focus {
+  border-color: #007bff;
+}
+.all-items-page .all-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 20px;
+}
+.all-items-page .card {
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.all-items-page .card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
