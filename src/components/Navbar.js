@@ -21,6 +21,11 @@ const Navbar = () => {
             </NavLink>
           </li>
           <li>
+            <NavLink to="/post" className={({ isActive }) => (isActive ? 'active' : '')}>
+              Post Item
+            </NavLink>
+          </li>
+          <li>
             <NavLink to="/lost" className={({ isActive }) => (isActive ? 'active' : '')}>
               Lost Items
             </NavLink>

@@ -9,7 +9,9 @@ import Contact from "./pages/contact";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
+import PostItem from "./pages/PostItem";
 import AllItems from "./pages/AllItems";
+import ItemDetail from "./pages/ItemDetail";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/item/:id" element={<ItemDetail />} />
+          <Route path="/post" element={<PostItem />} />
           <Route path="/all" element={<AllItems />} />
         </Routes>
       </main>

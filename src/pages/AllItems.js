@@ -1,5 +1,4 @@
 import React, { useState, useMemo } from "react";
-import { Link } from "react-router-dom";
 import Card from "../components/Card";
 import { allItems } from "../data/items";
 
@@ -60,9 +59,7 @@ const AllItems = () => {
 
       <div className="all-grid">
         {filteredItems.map(item => (
-          <Link key={item.id} to={`/item/${item.id}`}>
-            <Card type={item.type} {...item} />
-          </Link>
+          <Card key={item.id} {...item} />
         ))}
       </div>
     </div>
