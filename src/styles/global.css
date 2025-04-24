@@ -24,9 +24,8 @@
 }
 /* Simple CSS for header and navigation */
 header {
-  background-color: #333;  /* Background color for the header */
-  padding: 20px 0;         /* Increased padding for top and bottom */
-  height: 100px;           /* Explicit height for the header */
+  background: none;
+  padding: 0;
 }
 
 nav ul {
@@ -47,12 +46,4 @@ nav ul li a {
   transition: background-color 0.3s ease;
 }
 
-nav ul li a:hover {
-  background-color: #555;  /* Hover effect for the links */
-}
-
-
-
-nav ul li a:hover {
-  background-color: #555;
-}
+/* Link hover styling moved to index.css */

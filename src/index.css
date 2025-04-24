@@ -1,7 +1,7 @@
 /* General Styling */
 body {
   font-family: 'Poppins', sans-serif;
-  background: #f4f4f9;
+  background: linear-gradient(135deg, #e9f1ff, #f4f4f9);
   margin: 0;
   padding: 0;
   color: #333;
@@ -14,6 +14,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .navbar a {
@@ -21,20 +22,34 @@ body {
   text-decoration: none;
   margin: 0 15px;
   font-weight: bold;
+  padding: 8px 12px;
+  border-radius: 4px;
 }
 
-.navbar a:hover {
-  text-decoration: underline;
+.navbar a:hover,
+.navbar .active {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* Header Section */
 .header {
-  text-align: center;
-  padding: 50px;
-  background: linear-gradient(135deg, #007bff, #00c6ff);
+  background: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 0;
+  padding: 0;
+}
+
+/* Navbar logo styling */
+.navbar .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
   color: white;
-  border-radius: 10px;
-  margin: 20px;
+}
+
+/* Active link styling */
+.navbar .active {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
 }
 
 /* Buttons */
@@ -52,7 +67,8 @@ body {
   font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  transition: 0.3s;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .btn-lost {
@@ -75,15 +91,15 @@ body {
   color: white;
   text-align: center;
   padding: 10px 0;
-  margin-top: 40px;
 }
+
 /* Home Page Styles */
 .home-container {
   text-align: center;
-  padding: 80px 20px;
+  padding: 100px 20px;
   background: linear-gradient(135deg, #007bff, #00d4ff); /* 🔥 Gradient Background */
   color: white;
-  min-height: 100vh;
+  min-height: calc(100vh - 200px);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -118,15 +134,37 @@ body {
 }
 
 .btn-primary {
-  background: white;
-  color: #007bff;
+  background: #007bff;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
 }
 
 .btn-secondary {
-  background: #ffcc00;
-  color: #333;
+  background: #0056b3;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 86, 179, 0.3);
 }
 
 .btn:hover {
-  transform: scale(1.05);
+  transform: scale(1.1);
+}
+
+/* Page container for Lost and Found pages */
+.page-container {
+  max-width: 800px;
+  margin: 60px auto;
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  text-align: center;
+}
+.page-container h1 {
+  color: #007bff;
+  margin-bottom: 20px;
+  font-size: 32px;
+}
+.page-container p {
+  color: #555;
+  font-size: 18px;
 }

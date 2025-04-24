@@ -1,17 +1,33 @@
 import React from "react";
+import { NavLink, Link } from "react-router-dom";
 import "../styles/global.css"; // CSS file include karni hai
 
 const Navbar = () => {
   return (
-    <nav className="navbar">
-      <div className="logo">UniTrack</div>
-      <ul className="nav-links">
-        <li><a href="src/pages/Home.js">Home</a></li>
-        <li><a href="src/pages/LostItems.js">Lost Items</a></li>
-        <li><a href="src/pages/FoundItems.js">Found Items</a></li>
-        <li><a href="src/pages/contact.js">Contact</a></li>
-      </ul>
-    </nav>
+    <header className="header">
+      <nav className="navbar">
+        <Link to="/" className="logo">
+          UniTrack
+        </Link>
+        <ul className="nav-links">
+          <li>
+            <NavLink to="/lost" className={({ isActive }) => (isActive ? 'active' : '')}>
+              Lost Items
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/found" className={({ isActive }) => (isActive ? 'active' : '')}>
+              Found Items
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/contact" className={({ isActive }) => (isActive ? 'active' : '')}>
+              Contact
+            </NavLink>
+          </li>
+        </ul>
+      </nav>
+    </header>
   );
 };
 
