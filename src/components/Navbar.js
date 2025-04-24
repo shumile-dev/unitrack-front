@@ -1,15 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavLink, Link } from "react-router-dom";
 import "../styles/global.css"; // CSS file include karni hai
 
 const Navbar = () => {
+  const [open, setOpen] = useState(false);
+
   return (
     <header className="header">
       <nav className="navbar">
         <Link to="/" className="logo">
           UniTrack
         </Link>
-        <ul className="nav-links">
+        <div className="hamburger" onClick={() => setOpen(!open)}>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <ul className={`nav-links ${open ? "open" : ""}`}>
           <li>
             <NavLink to="/" end className={({ isActive }) => (isActive ? 'active' : '')}>
               Home
