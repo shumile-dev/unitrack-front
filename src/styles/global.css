@@ -1,0 +1,58 @@
+.App {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  text-align: center;
+}
+
+.App-header {
+  background-color: #282c34;
+  padding: 2rem;
+  color: white;
+}
+
+.App-main {
+  flex: 1;
+  padding: 2rem;
+}
+
+.App-footer {
+  background-color: #20232a;
+  color: white;
+  padding: 1rem;
+  font-size: 0.9rem;
+}
+/* Simple CSS for header and navigation */
+header {
+  background-color: #333;  /* Background color for the header */
+  padding: 20px 0;         /* Increased padding for top and bottom */
+  height: 100px;           /* Explicit height for the header */
+}
+
+nav ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;     /* Vertically align the items */
+  height: 100%;            /* Make the navigation items take the full height */
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;         /* Larger font size for the links */
+  padding: 10px 20px;      /* Increased padding around each link */
+  transition: background-color 0.3s ease;
+}
+
+nav ul li a:hover {
+  background-color: #555;  /* Hover effect for the links */
+}
+
+
+
+nav ul li a:hover {
+  background-color: #555;
+}

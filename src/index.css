@@ -1,0 +1,132 @@
+/* General Styling */
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #f4f4f9;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+/* Navbar Styling */
+.navbar {
+  background: #007bff;
+  padding: 15px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar a {
+  color: white;
+  text-decoration: none;
+  margin: 0 15px;
+  font-weight: bold;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+/* Header Section */
+.header {
+  text-align: center;
+  padding: 50px;
+  background: linear-gradient(135deg, #007bff, #00c6ff);
+  color: white;
+  border-radius: 10px;
+  margin: 20px;
+}
+
+/* Buttons */
+.btn-container {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-lost {
+  background: #ff4c4c;
+  color: white;
+}
+
+.btn-found {
+  background: #28a745;
+  color: white;
+}
+
+.btn:hover {
+  opacity: 0.8;
+}
+
+/* Footer */
+.footer {
+  background: #333;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  margin-top: 40px;
+}
+/* Home Page Styles */
+.home-container {
+  text-align: center;
+  padding: 80px 20px;
+  background: linear-gradient(135deg, #007bff, #00d4ff); /* 🔥 Gradient Background */
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-title {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.home-subtitle {
+  font-size: 20px;
+  margin-bottom: 30px;
+}
+
+.buttons {
+  display: flex;
+  gap: 20px;
+}
+
+.btn {
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 18px;
+  transition: 0.3s;
+  font-weight: bold;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary {
+  background: white;
+  color: #007bff;
+}
+
+.btn-secondary {
+  background: #ffcc00;
+  color: #333;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
