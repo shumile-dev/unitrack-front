@@ -47,14 +47,12 @@ const Navbar = () => {
               Contact
             </NavLink>
           </li>
-          <li>
-            <NavLink to="/login" className={({ isActive }) => (isActive ? 'active' : '')}>
-              Login
+          <li className="auth-links">
+            <NavLink to="/login" className={({ isActive }) => (isActive ? 'active login-btn' : 'login-btn')}>
+              Log in
             </NavLink>
-          </li>
-          <li>
-            <NavLink to="/signup" className={({ isActive }) => (isActive ? 'active' : '')}>
-              Sign Up
+            <NavLink to="/signup" className={({ isActive }) => (isActive ? 'active signup-btn' : 'signup-btn')}>
+              Sign up
             </NavLink>
           </li>
         </ul>
