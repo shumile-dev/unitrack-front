@@ -72,6 +72,10 @@ input {
   border-radius: 8px;
 }
 
+textarea {
+  width: 100%;
+}
+
 button {
   padding: 12px 25px;
   border: none;

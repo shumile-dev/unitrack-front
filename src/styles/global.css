@@ -1,8 +1,68 @@
+/* Theme Variables and Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* Global box-sizing to prevent overflow */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+:root {
+  --color-primary: #0057FF;
+  --color-primary-light: #66B2FF;
+  --color-primary-dark: #0033CC;
+  --color-bg: #F0F4FF;
+  --color-text: #333;
+  --radius: 10px;
+  --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-dark: 0 6px 20px rgba(0, 0, 0, 0.10);
+  --transition: all 0.3s ease;
+  --font-primary: 'Inter', sans-serif;
+}
+
+/* Hide legacy App classes */
 .App {
+  display: none !important;
+}
+
+/* Header styling */
+header {
+  background: var(--color-primary);
+  padding: 0;
+}
+
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
   display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  height: 100%;
+  flex: 0 0 auto;
+}
+
+nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  transition: var(--transition);
+}
+
+nav ul li a:hover {
+  background: var(--color-primary-light);
+  transform: scale(1.05);
+}
+
+/* Footer styling */
+.footer {
+  background: var(--color-primary-dark);
+  color: white;
   text-align: center;
+  padding: 10px 0;
+  box-shadow: var(--shadow-light);
 }
 
 .App-header {
@@ -22,6 +82,7 @@
   padding: 1rem;
   font-size: 0.9rem;
 }
+
 /* Simple CSS for header and navigation */
 header {
   background: none;

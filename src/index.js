@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client"; // ✅ Ye change karein
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
+import "leaflet/dist/leaflet.css";
 
 const root = ReactDOM.createRoot(document.getElementById("root")); // ✅ Ye method use karein
 root.render(

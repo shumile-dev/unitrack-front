@@ -1,10 +1,27 @@
+/* Theme Variables and Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+:root {
+  --color-primary: #0057FF;
+  --color-primary-light: #66B2FF;
+  --color-primary-dark: #0033CC;
+  --color-secondary: #004BB5;
+  --color-bg: #F0F4FF;
+  --color-text: #333;
+  --radius: 10px;
+  --shadow-light: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --shadow-dark: 0 6px 20px rgba(0, 0, 0, 0.10);
+  --transition: all 0.3s ease;
+  --font-primary: 'Inter', sans-serif;
+}
+
 /* General Styling */
 body {
-  font-family: 'Poppins', sans-serif;
-  background: linear-gradient(135deg, #e9f1ff, #f4f4f9);
+  font-family: var(--font-primary);
+  background: var(--color-bg);
   margin: 0;
   padding: 0;
-  color: #333;
+  color: var(--color-text);
+  transition: var(--transition);
 }
 
 img {
@@ -15,12 +32,12 @@ img {
 
 /* Navbar Styling */
 .navbar {
-  background: #007bff;
+  background: var(--color-primary);
   padding: 15px 30px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-light);
 }
 
 .navbar a {
@@ -34,7 +51,7 @@ img {
 
 .navbar a:hover,
 .navbar .active {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--color-primary-light);
 }
 
 /* Header Section */
@@ -103,7 +120,7 @@ img {
 .home-container {
   text-align: center;
   padding: 100px 20px;
-  background: linear-gradient(135deg, #007bff, #00d4ff); /* 🔥 Gradient Background */
+  background: linear-gradient(135deg, var(--color-primary-light), var(--color-secondary));
   color: white;
   min-height: calc(100vh - 200px);
   display: flex;
@@ -178,10 +195,12 @@ img {
 /* Card Component Styles */
 .card {
   background: white;
-  border-radius: 8px;
+  border-radius: var(--radius);
   padding: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-light);
   margin-bottom: 20px;
+  transition: var(--transition);
+  animation: fadeInUp 0.6s ease both;
 }
 .card-title {
   font-size: 20px;
@@ -211,56 +230,84 @@ img {
   border-radius: 4px;
 }
 
-/* Form container */
+/* Enhanced Form Container */
 .form-container {
-  max-width: 400px;
+  max-width: 450px;
   margin: 60px auto;
-  background: white;
-  padding: 40px;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  background: #fff;
+  padding: 50px 30px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-dark);
+  opacity: 0;
+  animation: fadeInUp 0.8s ease 0.2s forwards;
+  position: relative;
+}
+.form-container::before {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 4px;
+  background: var(--color-primary);
+  margin: 0 auto 20px;
+  border-radius: var(--radius);
 }
 .form-container h1 {
-  margin-bottom: 20px;
-  font-size: 28px;
-  color: #007bff;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  color: var(--color-primary-dark);
+  font-weight: 600;
 }
+
+/* Form Fields */
 .form-group {
   margin-bottom: 20px;
+  position: relative;
 }
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  font-weight: bold;
-  color: #333;
+  font-weight: 500;
+  color: var(--color-text);
 }
 .form-group input,
-.form-group select {
+.form-group select,
+.form-group textarea {
   width: 100%;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-  transition: border-color 0.3s;
+  padding: 14px 16px;
+  border: 1px solid var(--color-primary-light);
+  border-radius: var(--radius);
+  background: #f8faff;
+  transition: var(--transition);
+  resize: vertical;
 }
 .form-group input:focus,
-.form-group select:focus {
-  border-color: #007bff;
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(0,87,255,0.2);
+  background: #fff;
+  outline: none;
 }
+
+/* Submit Button */
 .submit-btn {
   width: 100%;
-  background: #007bff;
-  color: white;
-  padding: 12px;
+  padding: 14px;
+  margin-top: 10px;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+  color: #fff;
   border: none;
-  border-radius: 4px;
-  font-size: 16px;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s;
+  box-shadow: var(--shadow-light);
+  transition: var(--transition);
 }
 .submit-btn:hover {
-  background: #0056b3;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-dark);
 }
 
 /* Profile page styles */
@@ -290,23 +337,31 @@ img {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 30px;
+  opacity: 0;
+  animation: fadeIn 0.8s ease 0.2s forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 /* Card container styling for found/lost cards */
 .found-card,
 .lost-card {
   background: #fff;
-  border-radius: 10px;
+  border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: var(--shadow-light);
+  transition: var(--transition);
   display: flex;
   flex-direction: column;
+  animation: fadeInUp 0.6s ease both;
 }
 .found-card:hover,
 .lost-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-dark);
 }
 .found-img,
 .lost-img {
@@ -316,7 +371,7 @@ img {
 }
 .found-content,
 .lost-content {
-  padding: 20px;
+  padding: 20px 10px;
   display: flex;
   flex-direction: column;
   flex: 1;
@@ -393,6 +448,8 @@ img {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 30px;
   margin-top: 20px;
+  opacity: 0;
+  animation: fadeIn 0.8s ease 0.2s forwards;
 }
 .all-items-page .card {
   transition: transform 0.3s, box-shadow 0.3s;
@@ -561,4 +618,115 @@ img {
     margin: 20px 10px;
     padding: 20px;
   }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Map Container Styles */
+.map-container {
+  margin: 30px auto;
+  max-width: 900px;
+  width: 100%;
+  padding: 0 20px;
+}
+.map-container iframe {
+  width: 100%;
+  height: 450px;
+  border: 0;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-light);
+  transition: var(--transition);
+}
+
+@media (max-width: 768px) {
+  .map-container iframe {
+    height: 300px;
+  }
+}
+
+/* Creative Map Section Styling */
+.map-section {
+  position: relative;
+  width: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 40px 0;
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible !important;
+}
+.map-title {
+  font-size: 1.8rem;
+  color: #fff;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 6px rgba(0,0,0,0.2);
+  animation: fadeInDown 0.6s ease both;
+}
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.map-container {
+  margin: 0;
+  max-width: none;
+  width: 100%;
+  padding: 0;
+  overflow: visible !important;
+}
+.map-container iframe {
+  width: 100%;
+  height: 70vh;
+}
+.map-marker {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  font-size: 2.5rem;
+  transform: translate(-50%, -100%);
+  color: var(--color-primary-dark);
+  animation: pulse 2s ease-in-out infinite;
+}
+.map-marker::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  border: 3px solid var(--color-primary-dark);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: ripple 1.5s ease-out infinite;
+}
+@keyframes pulse {
+  0%,100% { transform: translate(-50%, -100%) scale(1); }
+  50%    { transform: translate(-50%, -100%) scale(1.3); }
+}
+@keyframes ripple {
+  0%   { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  100% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+}
+
+/* Reveal Google Maps style controls */
+.main-content,
+.home-container,
+.map-section,
+.map-container {
+  overflow: visible !important;
+}
+
+/* Leaflet Map styling in forms */
+.leaflet-container {
+  width: 100% !important;
+  height: 300px !important;
+  margin-bottom: 20px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-light);
+}
+.leaflet-control-geocoder-icon {
+  color: var(--color-primary-dark) !important;
 }
