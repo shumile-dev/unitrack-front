@@ -24,7 +24,7 @@ const Navbar = () => {
     <header className="header">
       <nav className="navbar">
         <Link to="/" className="logo">
-          UniTrack
+          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiPHs3_6shinrriAGcaxOyv_Y8rqIuY4A4vio43hBKUjZJ7Lagdbagkko5GFomRfvTWbY&usqp=CAU" alt="Logo" className="logo-img" />
         </Link>
         <div className="hamburger" onClick={() => setOpen(!open)}>
           <span></span>
