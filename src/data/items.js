@@ -1,68 +1,40 @@
-// Central dummy data file for items
-export const foundItems = [
-  {
-    id: 1,
-    type: 'found',
-    title: 'Blue Backpack',
-    description: 'Found near the main gate on 12 April.',
-    image: 'https://i.pinimg.com/736x/75/53/d7/7553d73e59517c4d98c1011681762f73.jpg',
-    location: 'Main Gate',
-    date: '2025-04-12',
-    reporter: 'Sara Ahmed'
-  },
-  {
-    id: 2,
-    type: 'found',
-    title: 'Silver Watch',
-    description: 'Found in the Library on 9 April.',
-    image: 'https://i.pinimg.com/736x/c6/ce/51/c6ce511b028c7ef0c15335a3f7e69158.jpg',
-    location: 'Library',
-    date: '2025-04-09',
-    reporter: 'Kashan Ali'
-  },
-  {
-    id: 3,
-    type: 'found',
-    title: 'Pen Drive',
-    description: 'Found in Lecture Hall 3 after class on 11 April.',
-    image: 'https://i.pinimg.com/736x/ae/10/39/ae1039f55debb8913dd732c42412517f.jpg',
-    location: 'Lecture Hall 3',
-    date: '2025-04-11',
-    reporter: 'Ayesha Zafar'
-  }
-];
+// Central data file for items
+import axios from 'axios';
 
-export const lostItems = [
-  {
-    id: 4,
-    type: 'lost',
-    title: 'Black Wallet',
-    description: 'Lost near the cafeteria on 10 April.',
-    image: 'https://i.pinimg.com/736x/75/53/d7/7553d73e59517c4d98c1011681762f73.jpg',
-    location: 'Cafeteria',
-    date: '2025-04-10',
-    reporter: 'Ali Khan'
-  },
-  {
-    id: 5,
-    type: 'lost',
-    title: 'Red Umbrella',
-    description: 'Lost in Lecture Hall 2 on 8 April.',
-    image: 'https://i.pinimg.com/736x/c6/ce/51/c6ce511b028c7ef0c15335a3f7e69158.jpg',
-    location: 'Lecture Hall 2',
-    date: '2025-04-08',
-    reporter: 'Fatima Noor'
-  },
-  {
-    id: 6,
-    type: 'lost',
-    title: 'Keys Keychain',
-    description: 'Lost outside the admin block on 11 April.',
-    image: 'https://i.pinimg.com/736x/ae/10/39/ae1039f55debb8913dd732c42412517f.jpg',
-    location: 'Admin Block',
-    date: '2025-04-11',
-    reporter: 'Omar Rizwan'
-  }
-];
+// Placeholder arrays that will be populated by API data
+export let foundItems = [];
+export let lostItems = [];
+export let allItems = [];
 
-export const allItems = [...foundItems, ...lostItems]; 
+// Function to fetch all blogs from the API
+export const fetchAllItems = async () => {
+  try {
+    const response = await axios.get('http://localhost:5000/blog/all');
+    const blogsData = response.data.blogs;
+    
+    // Map data to format compatible with the app
+    const formattedData = blogsData.map(item => ({
+      id: item._id,
+      type: item.type || 'found', // Default to 'found' if not specified
+      title: item.title,
+      description: item.description, // Updated from content to description
+      image: item.photoPath,
+      location: item.location || 'Not specified',
+      date: item.date ? new Date(item.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
+      reporter: item.reporter || 'Unknown'
+    }));
+    
+    // Update the arrays
+    allItems = formattedData;
+    foundItems = formattedData.filter(item => item.type === 'found');
+    lostItems = formattedData.filter(item => item.type === 'lost');
+    
+    return formattedData;
+  } catch (error) {
+    console.error('Error fetching blog data:', error);
+    return [];
+  }
+};
+
+// Initial fetch when the module is imported - 
+// This is just to pre-load data but components should use fetchAllItems() directly 

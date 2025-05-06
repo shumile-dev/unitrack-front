@@ -1,14 +1,33 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Card from "../components/Card";
-import { allItems } from "../data/items";
+import { fetchAllItems } from "../data/items";
 
 const AllItems = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState({ found: true, lost: true });
   const [sortOrder, setSortOrder] = useState("newest");
+  const [items, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Load data when component mounts
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchAllItems();
+        setItems(data);
+      } catch (error) {
+        console.error("Error loading items:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
+  }, []);
 
   const filteredItems = useMemo(() => {
-    return allItems
+    return items
       .filter(item => filterType[item.type])
       .filter(item =>
         item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -19,7 +38,7 @@ const AllItems = () => {
         const dateB = new Date(b.date);
         return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
       });
-  }, [searchTerm, filterType, sortOrder]);
+  }, [searchTerm, filterType, sortOrder, items]);
 
   return (
     <div className="page-container all-items-page">
@@ -57,11 +76,17 @@ const AllItems = () => {
         </select>
       </div>
 
-      <div className="all-grid">
-        {filteredItems.map(item => (
-          <Card key={item.id} {...item} />
-        ))}
-      </div>
+      {loading ? (
+        <div className="loading">Loading items...</div>
+      ) : (
+        <div className="all-grid">
+          {filteredItems.length > 0 ? (
+            filteredItems.map(item => <Card key={item.id} {...item} />)
+          ) : (
+            <p>No items found matching your criteria.</p>
+          )}
+        </div>
+      )}
     </div>
   );
 };
