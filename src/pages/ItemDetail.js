@@ -21,6 +21,23 @@ const ItemDetail = () => {
         if (response.data && (response.data.blog || response.data)) {
           // Handle both response formats
           const itemData = response.data.blog || response.data;
+          console.log("Item data received:", itemData);
+          
+          // Convert coordinates to numbers if they're strings
+          if (itemData.latitude && typeof itemData.latitude === 'string') {
+            itemData.latitude = parseFloat(itemData.latitude);
+          }
+          
+          if (itemData.longitude && typeof itemData.longitude === 'string') {
+            itemData.longitude = parseFloat(itemData.longitude);
+          }
+          
+          console.log("Processed coordinates:", {
+            latitude: itemData.latitude,
+            longitude: itemData.longitude,
+            type: itemData.type
+          });
+          
           setItem(itemData);
         } else {
           setError("Item data structure is unexpected");
@@ -69,6 +86,15 @@ const ItemDetail = () => {
   // Determine item type badge color
   const typeClass = item.type === 'lost' ? 'lost-badge' : 'found-badge';
   
+  // Check if coordinates are valid numbers
+  const hasValidCoordinates = 
+    item.latitude !== undefined && 
+    item.latitude !== null && 
+    !isNaN(item.latitude) && 
+    item.longitude !== undefined && 
+    item.longitude !== null && 
+    !isNaN(item.longitude);
+  
   return (
     <div className="page-container item-detail-page">
       <ToastContainer position="top-right" autoClose={3000} />
@@ -107,7 +133,7 @@ const ItemDetail = () => {
                 <div className="metadata-icon">📍</div>
                 <div className="metadata-content">
                   <span className="metadata-label">Location</span>
-                  <span className="metadata-value">{item.location}</span>
+                  <span className="metadata-value">{item.location || "Location not provided"}</span>
                 </div>
               </div>
               
@@ -123,14 +149,24 @@ const ItemDetail = () => {
                 <div className="metadata-icon">👤</div>
                 <div className="metadata-content">
                   <span className="metadata-label">Reporter</span>
-                  <span className="metadata-value">{item.reporter}</span>
+                  <span className="metadata-value">{item.reporter || "Anonymous"}</span>
                 </div>
               </div>
+              
+              {!hasValidCoordinates && (
+                <div className="metadata-item">
+                  <div className="metadata-icon">ℹ️</div>
+                  <div className="metadata-content">
+                    <span className="metadata-label">Map Status</span>
+                    <span className="metadata-value">No coordinates available for mapping</span>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
         
-        {(item.latitude && item.longitude) && (
+        {hasValidCoordinates && (
           <div className="item-map-container">
             <h2>Item Location</h2>
             <MapContainer 

@@ -64,6 +64,7 @@ img {
   position: relative;
   transition: color var(--animation-speed-fast),
               background var(--animation-speed-fast);
+  z-index: 1;
 }
 
 .navbar a::after {
@@ -1602,6 +1603,7 @@ img {
 .logout-btn {
   background-color: #e74c3c;
   color: white;
+  z-index: 1;
 }
 
 .logout-btn:hover {
