@@ -112,6 +112,9 @@ img {
   color: white;
   background: var(--color-secondary);
   border: 1px solid var(--color-secondary);
+  z-index: 1;
+
+  
 }
 
 .login-btn:hover {

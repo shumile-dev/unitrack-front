@@ -25,6 +25,7 @@ const Navbar = () => {
       <nav className="navbar">
         <Link to="/" className="logo">
           <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiPHs3_6shinrriAGcaxOyv_Y8rqIuY4A4vio43hBKUjZJ7Lagdbagkko5GFomRfvTWbY&usqp=CAU" alt="Logo" className="logo-img" />
+          Unitrack
         </Link>
         <div className="hamburger" onClick={() => setOpen(!open)}>
           <span></span>
@@ -65,6 +66,11 @@ const Navbar = () => {
           
           {isLoggedIn ? (
             <>
+              <li>
+                <NavLink to="/my-posts" className={({ isActive }) => (isActive ? 'active' : '')}>
+                  My Posts
+                </NavLink>
+              </li>
               <li>
                 <NavLink to="/profile" className={({ isActive }) => (isActive ? 'active' : '')}>
                   Profile

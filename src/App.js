@@ -12,6 +12,11 @@ import Profile from "./pages/Profile";
 import PostItem from "./pages/PostItem";
 import AllItems from "./pages/AllItems";
 import ItemDetail from "./pages/ItemDetail";
+import MyPosts from "./pages/MyPosts";
+import EditPost from "./pages/EditPost";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import EditProfile from "./pages/EditProfile";
 // Uncomment if you have framer-motion installed
 // import PageTransition from "./components/PageTransition";
 
@@ -33,9 +38,14 @@ function App() {
           <Route path="/login" element={<CssTransition><Login /></CssTransition>} />
           <Route path="/signup" element={<CssTransition><Signup /></CssTransition>} />
           <Route path="/profile" element={<CssTransition><Profile /></CssTransition>} />
+          <Route path="/edit-profile" element={<CssTransition><EditProfile /></CssTransition>} />
           <Route path="/item/:id" element={<CssTransition><ItemDetail /></CssTransition>} />
           <Route path="/post" element={<CssTransition><PostItem /></CssTransition>} />
           <Route path="/all" element={<CssTransition><AllItems /></CssTransition>} />
+          <Route path="/my-posts" element={<CssTransition><MyPosts /></CssTransition>} />
+          <Route path="/edit-post/:id" element={<CssTransition><EditPost /></CssTransition>} />
+          <Route path="/forgot-password" element={<CssTransition><ForgotPassword /></CssTransition>} />
+          <Route path="/reset-password/:token" element={<CssTransition><ResetPassword /></CssTransition>} />
         </Routes>
       </main>
       <Footer />

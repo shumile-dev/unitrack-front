@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -87,12 +87,15 @@ const Login = () => {
             disabled={loading}
           />
         </div>
+        <div className="forgot-password">
+          <Link to="/forgot-password">Forgot Password?</Link>
+        </div>
         <button type="submit" className="submit-btn" disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </button>
       </form>
       <div className="form-footer">
-        <p>Don't have an account? <a href="/signup">Sign up here</a></p>
+        <p>Don't have an account? <Link to="/signup">Sign up here</Link></p>
       </div>
     </div>
   );

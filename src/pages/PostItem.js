@@ -5,6 +5,9 @@ import markerIconUrl from "leaflet/dist/images/marker-icon.png";
 import markerIconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
 import markerShadowUrl from "leaflet/dist/images/marker-shadow.png";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Fix Leaflet default icon path resolution
 delete L.Icon.Default.prototype._getIconUrl;
@@ -56,40 +59,83 @@ const PostItem = () => {
   const [reporter, setReporter] = useState("");
   // Optional manual location override
   const [manualLocation, setManualLocation] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = e => {
+  useEffect(() => {
+    // Get current user info to prefill reporter field
+    const userInfo = localStorage.getItem("user");
+    if (userInfo) {
+      const user = JSON.parse(userInfo);
+      setReporter(user.name || "");
+    }
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Determine final location and coords
-    const addressToSubmit = manualLocation.trim() || locationObj.address;
-    const latitudeToSubmit = manualLocation.trim() ? null : locationObj.lat;
-    const longitudeToSubmit = manualLocation.trim() ? null : locationObj.lng;
-    const formData = new FormData();
-    formData.append("type", type);
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("location", addressToSubmit);
-    formData.append("latitude", latitudeToSubmit);
-    formData.append("longitude", longitudeToSubmit);
-    formData.append("date", date);
-    formData.append("reporter", reporter);
-    if (imageFile) formData.append("image", imageFile);
-    // send FormData to backend
-    fetch("/api/items", {
-      method: "POST",
-      body: formData
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log("Upload response:", data);
-        alert("Item submitted!");
+    setLoading(true);
+    setError("");
+
+    try {
+      // Check if user is logged in
+      const userInfo = localStorage.getItem("user");
+      if (!userInfo) {
+        toast.error("Please log in to post an item");
+        navigate("/login");
+        return;
+      }
+
+      // Determine final location and coords
+      const addressToSubmit = manualLocation.trim() || locationObj.address;
+      const latitudeToSubmit = manualLocation.trim() ? null : locationObj.lat;
+      const longitudeToSubmit = manualLocation.trim() ? null : locationObj.lng;
+      
+      // Get user ID for author field
+      const user = JSON.parse(userInfo);
+      
+      const formData = new FormData();
+      formData.append("type", type);
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("location", addressToSubmit);
+      formData.append("latitude", latitudeToSubmit);
+      formData.append("longitude", longitudeToSubmit);
+      formData.append("date", date);
+      formData.append("reporter", reporter);
+      formData.append("author", user._id); // Add author ID
+      
+      if (imageFile) {
+        formData.append("photoPath", imageFile);
+      }
+      
+      // Send FormData to backend using axios
+      const response = await axios.post("http://localhost:5000/blog", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log("Upload response:", response.data);
+      toast.success("Item submitted successfully!");
+      
+      // Navigate after short delay to see the toast
+      setTimeout(() => {
         navigate("/all");
-      })
-      .catch(err => console.error("Upload error:", err));
+      }, 2000);
+    } catch (err) {
+      console.error("Upload error:", err);
+      setError(err.response?.data?.message || "Failed to submit item");
+      toast.error(err.response?.data?.message || "Failed to submit item");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="form-container">
+      <ToastContainer position="top-right" autoClose={3000} />
       <h1>Post Item</h1>
+      {error && <div className="error-message">{error}</div>}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Category</label>
@@ -105,6 +151,7 @@ const PostItem = () => {
             value={title}
             onChange={e => setTitle(e.target.value)}
             required
+            disabled={loading}
           />
         </div>
         <div className="form-group">
@@ -114,6 +161,7 @@ const PostItem = () => {
             onChange={e => setDescription(e.target.value)}
             rows="4"
             required
+            disabled={loading}
           />
         </div>
         <div className="form-group">
@@ -135,7 +183,7 @@ const PostItem = () => {
             value={locationObj.address}
             readOnly
             placeholder="Selected address"
-            required
+            required={!manualLocation.trim()}
           />
         </div>
         <div className="form-group">
@@ -160,6 +208,7 @@ const PostItem = () => {
             value={manualLocation}
             onChange={e => setManualLocation(e.target.value)}
             placeholder="Or enter location manually"
+            disabled={loading}
           />
         </div>
         <div className="form-group">
@@ -169,6 +218,7 @@ const PostItem = () => {
             value={date}
             onChange={e => setDate(e.target.value)}
             required
+            disabled={loading}
           />
         </div>
         <div className="form-group">
@@ -178,6 +228,7 @@ const PostItem = () => {
             accept="image/*"
             onChange={e => setImageFile(e.target.files[0])}
             required
+            disabled={loading}
           />
         </div>
         <div className="form-group">
@@ -187,9 +238,12 @@ const PostItem = () => {
             value={reporter}
             onChange={e => setReporter(e.target.value)}
             required
+            disabled={loading}
           />
         </div>
-        <button type="submit" className="submit-btn">Submit</button>
+        <button type="submit" className="submit-btn" disabled={loading}>
+          {loading ? "Submitting..." : "Submit"}
+        </button>
       </form>
     </div>
   );
