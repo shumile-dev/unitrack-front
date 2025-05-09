@@ -86,6 +86,7 @@ const EditPost = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [post, setPost] = useState({
     type: "",
@@ -104,7 +105,9 @@ const EditPost = () => {
     const fetchPost = async () => {
       try {
         const response = await axios.get(`http://localhost:5000/blog/${id}`);
-        const postData = response.data;
+        console.log("Fetched post data:", response.data);
+        
+        const postData = response.data.blog || response.data;
         
         setPost({
           type: postData.type || "",
@@ -117,8 +120,8 @@ const EditPost = () => {
 
         if (postData.latitude && postData.longitude) {
           setLocationObj({
-            lat: postData.latitude,
-            lng: postData.longitude,
+            lat: parseFloat(postData.latitude),
+            lng: parseFloat(postData.longitude),
             address: postData.location || ""
           });
         } else {
@@ -126,7 +129,7 @@ const EditPost = () => {
         }
 
         if (postData.photoPath) {
-          setCurrentImage(`http://localhost:5000/${postData.photoPath}`);
+          setCurrentImage(postData.photoPath);
         }
 
         setLoading(false);
@@ -134,6 +137,7 @@ const EditPost = () => {
         console.error("Error fetching post:", err);
         setError("Failed to load post details");
         setLoading(false);
+        toast.error("Failed to load post details");
       }
     };
 
@@ -147,34 +151,82 @@ const EditPost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
+    setError("");
     
     try {
+      // Check if user is authenticated
+      const isAuthenticated = localStorage.getItem("auth") === "true";
+      
+      if (!isAuthenticated) {
+        toast.error("You must be logged in to update posts");
+        navigate("/login");
+        return;
+      }
+      
+      // Get user info for the request
+      const userInfo = localStorage.getItem("user");
+      if (!userInfo) {
+        toast.error("User information not found");
+        return;
+      }
+      
+      const user = JSON.parse(userInfo);
+      
       // Determine final location and coords
       const addressToSubmit = manualLocation.trim() || locationObj.address;
-      const latitudeToSubmit = manualLocation.trim() ? null : locationObj.lat;
-      const longitudeToSubmit = manualLocation.trim() ? null : locationObj.lng;
+      
+      // Ensure latitude and longitude are proper numbers or null
+      const latitudeToSubmit = manualLocation.trim() ? null : 
+        (locationObj.lat !== null ? Number(locationObj.lat) : null);
+      
+      const longitudeToSubmit = manualLocation.trim() ? null : 
+        (locationObj.lng !== null ? Number(locationObj.lng) : null);
       
       const formData = new FormData();
-      formData.append("id", id);
+      formData.append("blogId", id);
       formData.append("type", post.type);
       formData.append("title", post.title);
       formData.append("description", post.description);
       formData.append("location", addressToSubmit);
-      formData.append("latitude", latitudeToSubmit);
-      formData.append("longitude", longitudeToSubmit);
+      
+      // Only append latitude/longitude if they're not null
+      if (latitudeToSubmit !== null) {
+        formData.append("latitude", latitudeToSubmit);
+      }
+      
+      if (longitudeToSubmit !== null) {
+        formData.append("longitude", longitudeToSubmit);
+      }
+      
       formData.append("date", post.date);
       formData.append("reporter", post.reporter);
+      formData.append("author", user._id);
       
       if (imageFile) {
-        formData.append("image", imageFile);
+        formData.append("photoPath", imageFile);
       }
 
-      await axios.put(`http://localhost:5000/blog`, formData);
-      toast.success("Post updated successfully");
-      navigate("/my-posts");
+      const response = await axios.put("http://localhost:5000/blog", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          "Authorization": `Bearer ${user._id}` // Using user ID as token
+        }
+      });
+
+      console.log("Update response:", response.data);
+      toast.success("Post updated successfully!");
+      
+      // Navigate after short delay to see the toast
+      setTimeout(() => {
+        navigate("/my-posts");
+      }, 2000);
     } catch (err) {
-      console.error("Error updating post:", err);
-      toast.error("Failed to update post");
+      console.error("Update error:", err);
+      setError(err.response?.data?.message || "Failed to update post");
+      toast.error(err.response?.data?.message || "Failed to update post");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -207,6 +259,7 @@ const EditPost = () => {
             name="type" 
             value={post.type} 
             onChange={handleChange}
+            disabled={submitting}
           >
             <option value="found">Found</option>
             <option value="lost">Lost</option>
@@ -220,6 +273,7 @@ const EditPost = () => {
             value={post.title}
             onChange={handleChange}
             required
+            disabled={submitting}
           />
         </div>
         <div className="form-group">
@@ -230,6 +284,7 @@ const EditPost = () => {
             onChange={handleChange}
             rows="4"
             required
+            disabled={submitting}
           />
         </div>
         <div className="form-group">
@@ -279,6 +334,7 @@ const EditPost = () => {
             value={manualLocation}
             onChange={(e) => setManualLocation(e.target.value)}
             placeholder="Or enter location manually"
+            disabled={submitting}
           />
         </div>
         <div className="form-group">
@@ -289,16 +345,16 @@ const EditPost = () => {
             value={post.date}
             onChange={handleChange}
             required
+            disabled={submitting}
           />
         </div>
         <div className="form-group">
           <label>Current Image</label>
           {currentImage && (
             <img 
-              src={currentImage} 
+              src={currentImage.startsWith('http') ? currentImage : `http://localhost:5000/${currentImage}`} 
               alt="Current" 
-              className="current-image-preview" 
-              style={{ maxWidth: "200px", marginBottom: "10px" }}
+              className="current-image-preview"
             />
           )}
         </div>
@@ -308,6 +364,7 @@ const EditPost = () => {
             type="file"
             accept="image/*"
             onChange={(e) => setImageFile(e.target.files[0])}
+            disabled={submitting}
           />
         </div>
         <div className="form-group">
@@ -318,14 +375,18 @@ const EditPost = () => {
             value={post.reporter}
             onChange={handleChange}
             required
+            disabled={submitting}
           />
         </div>
         <div className="form-actions">
-          <button type="submit" className="submit-btn">Update Post</button>
+          <button type="submit" className="submit-btn" disabled={submitting}>
+            {submitting ? "Updating..." : "Update Post"}
+          </button>
           <button 
             type="button" 
             className="cancel-btn" 
             onClick={() => navigate("/my-posts")}
+            disabled={submitting}
           >
             Cancel
           </button>

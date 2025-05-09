@@ -87,8 +87,13 @@ const PostItem = () => {
 
       // Determine final location and coords
       const addressToSubmit = manualLocation.trim() || locationObj.address;
-      const latitudeToSubmit = manualLocation.trim() ? null : locationObj.lat;
-      const longitudeToSubmit = manualLocation.trim() ? null : locationObj.lng;
+      
+      // Ensure latitude and longitude are proper numbers or null
+      const latitudeToSubmit = manualLocation.trim() ? null : 
+        (locationObj.lat !== null ? Number(locationObj.lat) : null);
+      
+      const longitudeToSubmit = manualLocation.trim() ? null : 
+        (locationObj.lng !== null ? Number(locationObj.lng) : null);
       
       // Get user ID for author field
       const user = JSON.parse(userInfo);
@@ -98,8 +103,16 @@ const PostItem = () => {
       formData.append("title", title);
       formData.append("description", description);
       formData.append("location", addressToSubmit);
-      formData.append("latitude", latitudeToSubmit);
-      formData.append("longitude", longitudeToSubmit);
+      
+      // Only append latitude/longitude if they're not null
+      if (latitudeToSubmit !== null) {
+        formData.append("latitude", latitudeToSubmit);
+      }
+      
+      if (longitudeToSubmit !== null) {
+        formData.append("longitude", longitudeToSubmit);
+      }
+      
       formData.append("date", date);
       formData.append("reporter", reporter);
       formData.append("author", user._id); // Add author ID

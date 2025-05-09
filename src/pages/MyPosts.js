@@ -8,6 +8,7 @@ const MyPosts = () => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,13 +60,43 @@ const MyPosts = () => {
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this post?")) {
       try {
+        setDeleteLoading(true);
+        
+        // Check if user is authenticated
+        const isAuthenticated = localStorage.getItem("auth") === "true";
+        
+        if (!isAuthenticated) {
+          toast.error("You must be logged in to delete posts");
+          navigate("/login");
+          return;
+        }
+        
+        // Get user info for the request
+        const userInfo = localStorage.getItem("user");
+        if (!userInfo) {
+          toast.error("User information not found");
+          return;
+        }
+        
+        const user = JSON.parse(userInfo);
+        
+        // Make the API call
         await axios.delete(`http://localhost:5000/blog/${id}`);
+        
+        // Update the UI after successful deletion
+        setPosts(prevPosts => prevPosts.filter(post => post._id !== id));
         toast.success("Post deleted successfully");
-        // Update the posts list
-        setPosts(posts.filter(post => post._id !== id));
       } catch (err) {
         console.error("Error deleting post:", err);
-        toast.error("Failed to delete post");
+        
+        // If we got a 401 Unauthorized error, the auth middleware is still looking for cookies
+        if (err.response && err.response.status === 401) {
+          toast.error("Authentication issue. Please try logging out and logging in again.");
+        } else {
+          toast.error(err.response?.data?.message || "Failed to delete post");
+        }
+      } finally {
+        setDeleteLoading(false);
       }
     }
   };
@@ -92,7 +123,10 @@ const MyPosts = () => {
     <div className="page-container">
       <ToastContainer position="top-right" autoClose={3000} />
       <div className="my-posts-container">
-        <h1>My Posts</h1>
+        <div className="found-header-modern">
+          <h1>📝 My Posts</h1>
+          <p>Manage all your lost and found item posts</p>
+        </div>
         
         {posts.length === 0 ? (
           <div className="no-posts-message">
@@ -104,15 +138,17 @@ const MyPosts = () => {
             {posts.map((post) => (
               <div key={post._id} className="post-card">
                 {post.photoPath && (
-                  <img 
-                    src={post.photoPath.startsWith('http') ? post.photoPath : `http://localhost:5000/${post.photoPath}`} 
-                    alt={post.title} 
-                    className="post-image" 
-                  />
+                  <div className="card-image-container">
+                    <img 
+                      src={post.photoPath.startsWith('http') ? post.photoPath : `http://localhost:5000/${post.photoPath}`} 
+                      alt={post.title} 
+                      className="post-image" 
+                    />
+                  </div>
                 )}
                 <div className="post-content">
                   <h3>{post.title}</h3>
-                  <p className="post-type">{post.type}</p>
+                  <p className="post-type">{post.type === 'lost' ? 'Lost Item' : 'Found Item'}</p>
                   <p className="post-location">{post.location}</p>
                   <p className="post-date">
                     {new Date(post.date).toLocaleDateString()}
@@ -127,8 +163,9 @@ const MyPosts = () => {
                     <button
                       onClick={() => handleDelete(post._id)}
                       className="delete-btn"
+                      disabled={deleteLoading}
                     >
-                      Delete
+                      {deleteLoading ? "Deleting..." : "Delete"}
                     </button>
                   </div>
                 </div>

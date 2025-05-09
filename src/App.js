@@ -1,11 +1,10 @@
-import React from "react";
-import { Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import LostItems from "./pages/LostItems";
 import FoundItems from "./pages/FoundItems";
-import Contact from "./pages/contact";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
@@ -25,27 +24,67 @@ const CssTransition = ({ children }) => {
   return <div className="page-transition">{children}</div>;
 };
 
+// Auth checker component
+const RequireAuth = ({ children }) => {
+  const isAuthenticated = localStorage.getItem("auth") === "true";
+  const location = useLocation();
+
+  if (!isAuthenticated) {
+    // Redirect to login with current location as redirect after login
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+
+  return children;
+};
+
 function App() {
   return (
     <>
       <Navbar />
       <main className="main-content">
         <Routes>
-          <Route path="/" element={<CssTransition><Home /></CssTransition>} />
-          <Route path="/lost" element={<CssTransition><LostItems /></CssTransition>} />
-          <Route path="/found" element={<CssTransition><FoundItems /></CssTransition>} />
-          <Route path="/contact" element={<CssTransition><Contact /></CssTransition>} />
+          {/* Redirect root to login */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          
+          {/* Public routes */}
           <Route path="/login" element={<CssTransition><Login /></CssTransition>} />
           <Route path="/signup" element={<CssTransition><Signup /></CssTransition>} />
-          <Route path="/profile" element={<CssTransition><Profile /></CssTransition>} />
-          <Route path="/edit-profile" element={<CssTransition><EditProfile /></CssTransition>} />
-          <Route path="/item/:id" element={<CssTransition><ItemDetail /></CssTransition>} />
-          <Route path="/post" element={<CssTransition><PostItem /></CssTransition>} />
-          <Route path="/all" element={<CssTransition><AllItems /></CssTransition>} />
-          <Route path="/my-posts" element={<CssTransition><MyPosts /></CssTransition>} />
-          <Route path="/edit-post/:id" element={<CssTransition><EditPost /></CssTransition>} />
           <Route path="/forgot-password" element={<CssTransition><ForgotPassword /></CssTransition>} />
           <Route path="/reset-password/:token" element={<CssTransition><ResetPassword /></CssTransition>} />
+          
+          {/* Routes accessible to non-logged in users */}
+          <Route path="/home" element={<CssTransition><Home /></CssTransition>} />
+          <Route path="/lost" element={<CssTransition><LostItems /></CssTransition>} />
+          <Route path="/found" element={<CssTransition><FoundItems /></CssTransition>} />
+          <Route path="/all" element={<CssTransition><AllItems /></CssTransition>} />
+          <Route path="/item/:id" element={<CssTransition><ItemDetail /></CssTransition>} />
+          
+          {/* Protected routes */}
+          <Route path="/profile" element={
+            <RequireAuth>
+              <CssTransition><Profile /></CssTransition>
+            </RequireAuth>
+          } />
+          <Route path="/edit-profile" element={
+            <RequireAuth>
+              <CssTransition><EditProfile /></CssTransition>
+            </RequireAuth>
+          } />
+          <Route path="/post" element={
+            <RequireAuth>
+              <CssTransition><PostItem /></CssTransition>
+            </RequireAuth>
+          } />
+          <Route path="/my-posts" element={
+            <RequireAuth>
+              <CssTransition><MyPosts /></CssTransition>
+            </RequireAuth>
+          } />
+          <Route path="/edit-post/:id" element={
+            <RequireAuth>
+              <CssTransition><EditPost /></CssTransition>
+            </RequireAuth>
+          } />
         </Routes>
       </main>
       <Footer />
