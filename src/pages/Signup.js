@@ -149,6 +149,14 @@ const Signup = () => {
       try {
         localStorage.setItem("user", JSON.stringify(response.data.user));
         localStorage.setItem("auth", "true");
+        
+        // Store the access token if available
+        if (response.data.accessToken) {
+          localStorage.setItem("accessToken", response.data.accessToken);
+        } else {
+          // If no token is provided, use the user ID as a fallback (not ideal but maintains compatibility)
+          localStorage.setItem("accessToken", response.data.user._id);
+        }
       } catch (storageErr) {
         console.error("Error storing user data:", storageErr);
       }

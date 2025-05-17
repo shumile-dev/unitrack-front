@@ -5,14 +5,24 @@ import "../styles/global.css"; // CSS file include karni hai
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Check login status whenever location changes or component mounts
+  // Check login status and admin role whenever location changes or component mounts
   useEffect(() => {
     const checkAuthStatus = () => {
       const auth = localStorage.getItem("auth");
       setIsLoggedIn(auth === "true");
+      
+      // Check if user is admin
+      try {
+        const userData = JSON.parse(localStorage.getItem("user") || "{}");
+        setIsAdmin(userData.role === "admin");
+      } catch (err) {
+        console.error("Error parsing user data:", err);
+        setIsAdmin(false);
+      }
     };
 
     // Initial check
@@ -31,6 +41,7 @@ const Navbar = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("auth");
     setIsLoggedIn(false);
+    setIsAdmin(false);
     navigate("/login");
   };
 
@@ -92,6 +103,28 @@ const Navbar = () => {
                   Profile
                 </NavLink>
               </li>
+              
+              {/* Admin navigation items - shown directly in the nav instead of dropdown */}
+              {isAdmin && (
+                <>
+                  <li onClick={closeMenu} className="admin-menu-item">
+                    <NavLink to="/admin/dashboard" className={({ isActive }) => (isActive ? 'active' : '')}>
+                      Admin Dashboard
+                    </NavLink>
+                  </li>
+                  <li onClick={closeMenu} className="admin-menu-item">
+                    <NavLink to="/admin/users" className={({ isActive }) => (isActive ? 'active' : '')}>
+                      Manage Users
+                    </NavLink>
+                  </li>
+                  <li onClick={closeMenu} className="admin-menu-item">
+                    <NavLink to="/admin/posts" className={({ isActive }) => (isActive ? 'active' : '')}>
+                      Manage Posts
+                    </NavLink>
+                  </li>
+                </>
+              )}
+              
               <li className="auth-links" onClick={closeMenu}>
                 <button onClick={handleLogout} className="logout-btn">
                   Logout

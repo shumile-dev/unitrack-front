@@ -16,6 +16,10 @@ import EditPost from "./pages/EditPost";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import EditProfile from "./pages/EditProfile";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminUsers from "./pages/AdminUsers";
+import AdminPosts from "./pages/AdminPosts";
+import AdminUserForm from "./pages/AdminUserForm";
 // Uncomment if you have framer-motion installed
 // import PageTransition from "./components/PageTransition";
 
@@ -32,6 +36,33 @@ const RequireAuth = ({ children }) => {
   if (!isAuthenticated) {
     // Redirect to login with current location as redirect after login
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+
+  return children;
+};
+
+// Admin role checker component
+const RequireAdmin = ({ children }) => {
+  const isAuthenticated = localStorage.getItem("auth") === "true";
+  const location = useLocation();
+  let isAdmin = false;
+  
+  try {
+    const userData = JSON.parse(localStorage.getItem("user") || "{}");
+    isAdmin = userData.role === "admin";
+  } catch (err) {
+    console.error("Error parsing user data:", err);
+    isAdmin = false;
+  }
+
+  if (!isAuthenticated) {
+    // Redirect to login with current location as redirect after login
+    return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+  }
+  
+  if (!isAdmin) {
+    // Redirect non-admin users to home
+    return <Navigate to="/home" replace />;
   }
 
   return children;
@@ -84,6 +115,48 @@ function App() {
             <RequireAuth>
               <CssTransition><EditPost /></CssTransition>
             </RequireAuth>
+          } />
+          
+          {/* Admin routes */}
+          <Route path="/admin/dashboard" element={
+            <RequireAdmin>
+              <CssTransition><AdminDashboard /></CssTransition>
+            </RequireAdmin>
+          } />
+          <Route path="/admin/users" element={
+            <RequireAdmin>
+              <CssTransition><AdminUsers /></CssTransition>
+            </RequireAdmin>
+          } />
+          <Route path="/admin/users/add" element={
+            <RequireAdmin>
+              <CssTransition><AdminUserForm /></CssTransition>
+            </RequireAdmin>
+          } />
+          <Route path="/admin/users/edit/:id" element={
+            <RequireAdmin>
+              <CssTransition><AdminUserForm /></CssTransition>
+            </RequireAdmin>
+          } />
+          <Route path="/admin/users/:id" element={
+            <RequireAdmin>
+              <CssTransition><Profile /></CssTransition>
+            </RequireAdmin>
+          } />
+          <Route path="/admin/posts" element={
+            <RequireAdmin>
+              <CssTransition><AdminPosts /></CssTransition>
+            </RequireAdmin>
+          } />
+          <Route path="/admin/posts/:id" element={
+            <RequireAdmin>
+              <CssTransition><ItemDetail /></CssTransition>
+            </RequireAdmin>
+          } />
+          <Route path="/admin/posts/edit/:id" element={
+            <RequireAdmin>
+              <CssTransition><EditPost /></CssTransition>
+            </RequireAdmin>
           } />
         </Routes>
       </main>

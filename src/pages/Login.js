@@ -104,10 +104,18 @@ const Login = () => {
         localStorage.removeItem("savedEmail");
       }
       
-      // Store user data in localStorage
+      // Store user data and tokens in localStorage
       try {
         localStorage.setItem("user", JSON.stringify(response.data.user));
         localStorage.setItem("auth", "true"); // Ensure it's a string "true"
+        
+        // Store the access token if available
+        if (response.data.accessToken) {
+          localStorage.setItem("accessToken", response.data.accessToken);
+        } else {
+          // If no token is provided, use the user ID as a fallback (not ideal but maintains compatibility)
+          localStorage.setItem("accessToken", response.data.user._id);
+        }
       } catch (storageErr) {
         console.error("Error storing user data:", storageErr);
         // Continue login process even if storage fails
