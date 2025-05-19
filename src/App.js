@@ -20,6 +20,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
 import AdminPosts from "./pages/AdminPosts";
 import AdminUserForm from "./pages/AdminUserForm";
+import ResolvedItems from "./pages/ResolvedItems";
 // Uncomment if you have framer-motion installed
 // import PageTransition from "./components/PageTransition";
 
@@ -88,6 +89,7 @@ function App() {
           <Route path="/lost" element={<CssTransition><LostItems /></CssTransition>} />
           <Route path="/found" element={<CssTransition><FoundItems /></CssTransition>} />
           <Route path="/all" element={<CssTransition><AllItems /></CssTransition>} />
+          <Route path="/resolved" element={<CssTransition><ResolvedItems /></CssTransition>} />
           <Route path="/item/:id" element={<CssTransition><ItemDetail /></CssTransition>} />
           
           {/* Protected routes */}

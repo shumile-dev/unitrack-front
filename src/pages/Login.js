@@ -90,7 +90,8 @@ const Login = () => {
         email,
         password
       }, {
-        timeout: 10000 // 10 second timeout
+        timeout: 10000, // 10 second timeout
+        withCredentials: true // Important: enable cookies
       });
 
       // Handle successful login
@@ -109,12 +110,25 @@ const Login = () => {
         localStorage.setItem("user", JSON.stringify(response.data.user));
         localStorage.setItem("auth", "true"); // Ensure it's a string "true"
         
-        // Store the access token if available
+        // Check for token in response or cookies
         if (response.data.accessToken) {
           localStorage.setItem("accessToken", response.data.accessToken);
+          console.log('Token stored from response:', response.data.accessToken.substring(0, 10) + '...');
         } else {
-          // If no token is provided, use the user ID as a fallback (not ideal but maintains compatibility)
-          localStorage.setItem("accessToken", response.data.user._id);
+          // Use the decoded JWT token from cookies
+          const cookieToken = document.cookie
+            .split('; ')
+            .find(row => row.startsWith('accessToken='))
+            ?.split('=')[1];
+            
+          if (cookieToken) {
+            localStorage.setItem("accessToken", cookieToken);
+            console.log('Token stored from cookies');
+          } else {
+            // If no token is found, generate a simple token from user ID (not secure but maintains compatibility)
+            console.warn('No token found in response or cookies, using user ID as fallback');
+            localStorage.setItem("accessToken", response.data.user._id);
+          }
         }
       } catch (storageErr) {
         console.error("Error storing user data:", storageErr);

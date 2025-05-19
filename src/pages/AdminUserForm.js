@@ -48,15 +48,26 @@ const AdminUserForm = () => {
   const fetchUser = async () => {
     try {
       setLoading(true);
-      const adminUser = JSON.parse(localStorage.getItem('user'));
+      // Get the stored user object
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
       
-      const response = await axios.get(`http://localhost:5000/admin/users/${id}`, {
+      // Get the access token or use user._id as fallback
+      let token = localStorage.getItem('accessToken');
+      if (!token && user && user._id) {
+        token = user._id;
+      }
+      
+      if (!token) {
+        throw new Error('No authentication token available. Please login again.');
+      }
+      
+      const response = await axios.get(`http://localhost:5000/users/${id}`, {
         headers: {
-          Authorization: `Bearer ${adminUser._id}`
+          Authorization: `Bearer ${token}`
         }
       });
       
-      const userData = response.data;
+      const userData = response.data.user || response.data;
       
       // Update form with user data, excluding password
       setForm({
@@ -141,7 +152,18 @@ const AdminUserForm = () => {
     setError('');
     
     try {
-      const adminUser = JSON.parse(localStorage.getItem('user'));
+      // Get the stored user object
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      // Get the access token or use user._id as fallback
+      let token = localStorage.getItem('accessToken');
+      if (!token && user && user._id) {
+        token = user._id;
+      }
+      
+      if (!token) {
+        throw new Error('No authentication token available. Please login again.');
+      }
       
       // Prepare data
       const userData = { ...form };
@@ -151,16 +173,16 @@ const AdminUserForm = () => {
         delete userData.password;
       }
       
-      // For edit mode, send PUT request, otherwise POST
+      // For edit mode, send PUT request, otherwise POST for registration
       const response = isEditMode 
-        ? await axios.put(`http://localhost:5000/admin/users/${id}`, userData, {
+        ? await axios.put(`http://localhost:5000/users/${id}`, userData, {
             headers: {
-              Authorization: `Bearer ${adminUser._id}`
+              Authorization: `Bearer ${token}`
             }
           })
-        : await axios.post('http://localhost:5000/admin/users', userData, {
+        : await axios.post('http://localhost:5000/admin/register', userData, {
             headers: {
-              Authorization: `Bearer ${adminUser._id}`
+              Authorization: `Bearer ${token}`
             }
           });
       

@@ -5,54 +5,92 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "leaflet/dist/leaflet.css";
+import ClaimModal from '../components/ClaimModal';
 
 const ItemDetail = () => {
   const { id } = useParams();
   const [item, setItem] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showClaimModal, setShowClaimModal] = useState(false);
+  const [claims, setClaims] = useState([]);
+  const [userInfo, setUserInfo] = useState(null);
 
   useEffect(() => {
-    const fetchItemDetails = async () => {
+    const fetchData = async () => {
       try {
-        setLoading(true);
-        const response = await axios.get(`http://localhost:5000/blog/${id}`);
-        
-        if (response.data && (response.data.blog || response.data)) {
-          // Handle both response formats
-          const itemData = response.data.blog || response.data;
-          console.log("Item data received:", itemData);
-          
-          // Convert coordinates to numbers if they're strings
-          if (itemData.latitude && typeof itemData.latitude === 'string') {
-            itemData.latitude = parseFloat(itemData.latitude);
-          }
-          
-          if (itemData.longitude && typeof itemData.longitude === 'string') {
-            itemData.longitude = parseFloat(itemData.longitude);
-          }
-          
-          console.log("Processed coordinates:", {
-            latitude: itemData.latitude,
-            longitude: itemData.longitude,
-            type: itemData.type
-          });
-          
-          setItem(itemData);
-        } else {
-          setError("Item data structure is unexpected");
+        // Get user ID from localStorage
+        const userData = JSON.parse(localStorage.getItem('user'));
+        if (!userData || !userData._id) {
+          throw new Error('User not logged in');
         }
-      } catch (err) {
-        console.error("Error fetching item details:", err);
-        setError("Failed to load item details");
-        toast.error("Failed to load item details");
+
+        const [itemResponse, userResponse] = await Promise.all([
+          axios.get(`http://localhost:5000/blog/${id}`, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
+          }),
+          axios.get(`http://localhost:5000/users/${userData._id}`, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` }
+          })
+        ]);
+
+        console.log('Item Response:', itemResponse.data);
+        console.log('User Response:', userResponse.data);
+
+        // Check if we have the blog data in the correct structure
+        const blogData = itemResponse.data.blog || itemResponse.data;
+        setItem(blogData);
+        setUserInfo(userResponse.data);
+
+        // Get the author ID, handling both string and object cases
+        const authorId = blogData.author?._id || blogData.author;
+        console.log('Author ID:', authorId);
+        console.log('User ID:', userResponse.data._id);
+        
+        // If user is the author, fetch claims for this item
+        if (authorId === userResponse.data._id) {
+          try {
+            const claimsResponse = await axios.get(`http://localhost:5000/claim/item/${id}`, {
+              headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
+              withCredentials: true
+            });
+            console.log('Claims Response:', claimsResponse.data);
+            setClaims(claimsResponse.data);
+          } catch (claimError) {
+            console.error('Error fetching claims:', claimError);
+            // Don't set the main error state, just log the claims error
+          }
+        }
+      } catch (error) {
+        console.error('Error:', error.response || error);
+        setError(error.response?.data?.message || 'Error fetching item details');
+        toast.error(error.response?.data?.message || 'Error fetching item details');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchItemDetails();
+    fetchData();
   }, [id]);
+
+  const handleClaimSubmitted = (newClaim) => {
+    toast.success('Claim submitted successfully!');
+  };
+
+  const handleApproveClaim = async (claimId) => {
+    try {
+      await axios.put(`http://localhost:5000/claim/${claimId}/approve`, {}, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('accessToken')}` },
+        withCredentials: true
+      });
+      
+      toast.success('Claim approved successfully!');
+      // Refresh the page to show updated status
+      window.location.reload();
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Error approving claim');
+    }
+  };
 
   if (loading) {
     return (
@@ -95,6 +133,16 @@ const ItemDetail = () => {
     item.longitude !== null && 
     !isNaN(item.longitude);
   
+  // Get the author ID, handling both string and object cases
+  const authorId = item.author?._id || item.author;
+  
+  const canClaim = userInfo && 
+                  authorId !== userInfo._id && 
+                  !item.isResolved;
+
+  const isAuthor = userInfo && 
+                  authorId === userInfo._id;
+  
   return (
     <div className="page-container item-detail-page">
       <ToastContainer position="top-right" autoClose={3000} />
@@ -103,9 +151,14 @@ const ItemDetail = () => {
       
       <div className="item-header">
         <h1>{item.title}</h1>
-        <span className={`item-type-badge ${typeClass}`}>
-          {item.type === 'lost' ? 'Lost Item' : 'Found Item'}
-        </span>
+        <div className="item-status-badges">
+          <span className={`item-type-badge ${typeClass}`}>
+            {item.type === 'lost' ? 'Lost Item' : 'Found Item'}
+          </span>
+          {item.isResolved && (
+            <span className="resolved-badge">Resolved</span>
+          )}
+        </div>
       </div>
 
       <div className="item-content">
@@ -163,6 +216,43 @@ const ItemDetail = () => {
                 </div>
               )}
             </div>
+
+            {canClaim && (
+              <button 
+                className="claim-button submit-btn"
+                onClick={() => setShowClaimModal(true)}
+              >
+                Submit Claim for this Item
+              </button>
+            )}
+
+            {isAuthor && !item.isResolved && claims.length > 0 && (
+              <div className="claims-section">
+                <h3>Claims Received</h3>
+                <div className="claims-list">
+                  {claims.map(claim => (
+                    <div key={claim._id} className="claim-card">
+                      <div className="claim-info">
+                        <p><strong>Name:</strong> {claim.claimantName}</p>
+                        <p><strong>Phone:</strong> {claim.claimantPhone}</p>
+                        <p><strong>Hints:</strong> {claim.claimHints}</p>
+                      </div>
+                      {claim.status === 'pending' && (
+                        <button 
+                          className="approve-button submit-btn"
+                          onClick={() => handleApproveClaim(claim._id)}
+                        >
+                          Approve Claim
+                        </button>
+                      )}
+                      <span className={`claim-status ${claim.status}`}>
+                        {claim.status.charAt(0).toUpperCase() + claim.status.slice(1)}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
         
@@ -186,14 +276,13 @@ const ItemDetail = () => {
         )}
       </div>
       
-      <div className="item-actions">
-        <Link to="/all" className="item-button primary-button">
-          Browse More Items
-        </Link>
-        <Link to={item.type === 'lost' ? "/lost" : "/found"} className="item-button secondary-button">
-          See Other {item.type === 'lost' ? 'Lost' : 'Found'} Items
-        </Link>
-      </div>
+      {showClaimModal && (
+        <ClaimModal 
+          itemId={id}
+          onClose={() => setShowClaimModal(false)}
+          onClaimSubmitted={handleClaimSubmitted}
+        />
+      )}
     </div>
   );
 };

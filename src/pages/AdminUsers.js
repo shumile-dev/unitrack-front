@@ -89,15 +89,12 @@ const AdminUsers = () => {
         throw new Error('No authentication token available. Please login again.');
       }
       
-      // Use the PUT endpoint with a delete flag as we don't have a direct delete user endpoint
-      await axios.put(`http://localhost:5000/users/${userToDelete._id}`, 
-        { isDeleted: true }, // Mark as deleted 
-        {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
+      // Use the DELETE endpoint
+      await axios.delete(`http://localhost:5000/users/${userToDelete._id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
         }
-      );
+      });
       
       toast.success(`User ${userToDelete.name} deleted successfully`);
       setUsers(users.filter(user => user._id !== userToDelete._id));

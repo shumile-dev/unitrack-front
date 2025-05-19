@@ -90,6 +90,11 @@ const Navbar = () => {
               Found Items
             </NavLink>
           </li>
+          <li onClick={closeMenu}>
+            <NavLink to="/resolved" className={({ isActive }) => (isActive ? 'active' : '')}>
+              Resolved Items
+            </NavLink>
+          </li>
           
           {isLoggedIn ? (
             <>
