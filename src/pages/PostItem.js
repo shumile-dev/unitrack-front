@@ -131,6 +131,7 @@ const PostItem = () => {
   const [date, setDate] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [reporter, setReporter] = useState("");
+  const [phone, setPhone] = useState("");
   // Optional manual location override
   const [manualLocation, setManualLocation] = useState("");
   const [loading, setLoading] = useState(false);
@@ -142,6 +143,7 @@ const PostItem = () => {
     location: "",
     date: "",
     reporter: "",
+    phone: "",
     image: ""
   });
 
@@ -218,6 +220,15 @@ const PostItem = () => {
       valid = false;
     }
     
+    // Validate phone
+    if (!phone.trim()) {
+      newFieldErrors.phone = "Phone number is required";
+      valid = false;
+    } else if (!/^[0-9+\-\s()]{10,15}$/.test(phone.trim())) {
+      newFieldErrors.phone = "Please enter a valid phone number";
+      valid = false;
+    }
+    
     // Validate image
     if (!imageFile) {
       newFieldErrors.image = "Please upload an image";
@@ -242,6 +253,7 @@ const PostItem = () => {
       location: "",
       date: "",
       reporter: "",
+      phone: "",
       image: ""
     });
     
@@ -301,6 +313,7 @@ const PostItem = () => {
       
       formData.append("date", date);
       formData.append("reporter", reporter);
+      formData.append("phone", phone);
       
       if (!user._id) {
         toast.error("User ID not found. Please log in again.");
@@ -511,6 +524,21 @@ const PostItem = () => {
             className={fieldErrors.reporter ? "input-error" : ""}
           />
           {fieldErrors.reporter && <div className="field-error">{fieldErrors.reporter}</div>}
+        </div>
+        <div className="form-group">
+          <label>Phone</label>
+          <input
+            type="text"
+            value={phone}
+            onChange={e => {
+              setPhone(e.target.value);
+              clearFieldError("phone");
+            }}
+            required
+            disabled={loading}
+            className={fieldErrors.phone ? "input-error" : ""}
+          />
+          {fieldErrors.phone && <div className="field-error">{fieldErrors.phone}</div>}
         </div>
         <button type="submit" className="submit-btn" disabled={loading}>
           {loading ? "Submitting..." : "Submit"}

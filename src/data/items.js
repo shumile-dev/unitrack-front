@@ -21,7 +21,8 @@ export const fetchAllItems = async () => {
       image: item.photoPath,
       location: item.location || 'Not specified',
       date: item.date ? new Date(item.date).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-      reporter: item.reporter || 'Unknown'
+      reporter: item.reporter || 'Unknown',
+      phone: item.phone || 'Not provided' // Added phone field
     }));
     
     // Update the arrays

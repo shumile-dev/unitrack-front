@@ -42,6 +42,10 @@ const ItemDetail = () => {
         setItem(blogData);
         setUserInfo(userResponse.data);
 
+        // Debug the item data
+        console.log('Blog Data Structure:', blogData);
+        console.log('Phone Field:', blogData.phone);
+
         // Get the author ID, handling both string and object cases
         const authorId = blogData.author?._id || blogData.author;
         console.log('Author ID:', authorId);
@@ -203,6 +207,14 @@ const ItemDetail = () => {
                 <div className="metadata-content">
                   <span className="metadata-label">Reporter</span>
                   <span className="metadata-value">{item.reporter || "Anonymous"}</span>
+                </div>
+              </div>
+              
+              <div className="metadata-item">
+                <div className="metadata-icon">📞</div>
+                <div className="metadata-content">
+                  <span className="metadata-label">Contact</span>
+                  <span className="metadata-value">{item.phone || "No phone provided"}</span>
                 </div>
               </div>
               
